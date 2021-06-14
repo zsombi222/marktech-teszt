@@ -20,11 +20,9 @@ df = df[df['description'].apply(lambda s: 'mosópisztoly' not in s)]
 
 df['description'] = df['description'].apply(lambda s: separate(s))
 
-# TODO database
 engine = create_engine('sqlite://', echo=False)
 df.to_sql('tesztadatok', con=engine)
 
-# TODO sqldump
 print('\n\n**** sqldump ****\n\n')
 con = engine.raw_connection()
 for i in con.iterdump():
