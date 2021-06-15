@@ -12,26 +12,35 @@ def separate(s):
     return toreturn
 
 
-df = pd.read_csv("tesztadatforras.csv", '\t')
+def main():
+    # read file
+    df = pd.read_csv("tesztadatforras.csv", '\t')
 
-df['link'] = df['link'].apply(lambda s: s.replace('?utm_source=google_shopping&utm_medium=cpp&utm_campaign=direct_link', '?utm_source=hd-test'))
+    # change link
+    df['link'] = df['link'].apply(lambda s: s.replace('?utm_source=google_shopping&utm_medium=cpp&utm_campaign=direct_link', '?utm_source=hd-test'))
 
-df = df[df['description'].apply(lambda s: 'mosópisztoly' not in s)]
+    # filter mosopisztoly
+    df = df[df['description'].apply(lambda s: 'mosópisztoly' not in s)]
 
-df['description'] = df['description'].apply(lambda s: separate(s))
+    # separate description
+    df['description'] = df['description'].apply(lambda s: separate(s))
 
-engine = create_engine('sqlite://', echo=False)
-df.to_sql('tesztadatok', con=engine)
-
-print('\n\n**** sqldump ****\n\n')
-con = engine.raw_connection()
-for i in con.iterdump():
-    print(i)
-
-
-print('\n\n**** dataframe ****\n\n')
-print(df.to_string())
+    # db conn
+    engine = create_engine('sqlite://', echo=False)
+    df.to_sql('tesztadatok', con=engine)
 
 
+    # dump sql
+    print('\n\n**** sqldump ****\n\n')
+    con = engine.raw_connection()
+    for i in con.iterdump():
+        print(i)
+
+    # print dataframe not in db
+    print('\n\n**** dataframe ****\n\n')
+    print(df.to_string())
+
+
+main()
 
 
